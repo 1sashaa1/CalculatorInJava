@@ -11,12 +11,38 @@ public class Console {
 
         operations.put("+", (double... a) -> {
             if (a.length < 2) throw new IllegalArgumentException("Нужно минимум 2 аргумента");
-            return a[0] + a[1];
+            return Arrays.stream(a).sum();
+        });
+
+        operations.put("-", (double... a) -> {
+            if (a.length < 2) throw new IllegalArgumentException("Нужно минимум 2 аргумента");
+            return a[0] - Arrays.stream(a).skip(1).sum();
+        });
+
+        operations.put("*", (double... a) -> {
+            if (a.length < 2) throw new IllegalArgumentException("Нужно минимум 2 аргумента");
+            return  Arrays.stream(a)
+                    .reduce(1.0, (acc, num) -> acc * num);
+        });
+
+        operations.put("/", (double... a) -> {
+            if (a.length < 2) throw new IllegalArgumentException("Нужно ровно 2 аргумента");
+            return a[0] / a[1];
         });
 
         operations.put("sin", (double... a) -> {
             if (a.length < 1) throw new IllegalArgumentException("Нужен 1 аргумент");
             return Math.sin(a[0]);
+        });
+
+        operations.put("cos", (double... a) -> {
+            if (a.length < 1) throw new IllegalArgumentException("Нужен 1 аргумент");
+            return Math.sin(a[0]);
+        });
+
+        operations.put("atan2", (double... a) -> {
+            if (a.length < 2) throw new IllegalArgumentException("Нужно 2 аргумента");
+            return Math.atan2(a[0], a[1]);
         });
 
         while (true) {
@@ -27,17 +53,16 @@ public class Console {
                 if (op.equals("exit")) {
                     break;
                 }
-
-                System.out.println("args: ");
-                String[] argTokens = scanner.nextLine().trim().split("//s+");
-                double[] argsParsed = Arrays.stream(argTokens).mapToDouble(Double::parseDouble).toArray();
-
                 IOperation operation = operations.get(op);
-
                 if (operation == null) {
-                    System.out.println("Ошибка: операция не найдена");
+                    System.out.println("\u001B[31mОшибка: операция '" + op + "' не поддерживается\u001B[0m");
+                    System.out.println("Доступные операции: " + operations.keySet());
                     continue;
                 }
+
+                System.out.println("args: ");
+                String[] argTokens = scanner.nextLine().trim().split("\\s+");
+                double[] argsParsed = Arrays.stream(argTokens).mapToDouble(Double::parseDouble).toArray();
 
                 double result = operation.call(argsParsed);
                 System.out.println("Результат: " + result);
