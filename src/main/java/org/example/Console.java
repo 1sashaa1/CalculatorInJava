@@ -27,6 +27,7 @@ public class Console {
 
         operations.put("/", (double... a) -> {
             if (a.length < 2) throw new IllegalArgumentException("Нужно ровно 2 аргумента");
+            if (a[1] == 0) throw new ArithmeticException("Второй аргумент не должен быть равен 0");
             return a[0] / a[1];
         });
 
@@ -37,12 +38,42 @@ public class Console {
 
         operations.put("cos", (double... a) -> {
             if (a.length < 1) throw new IllegalArgumentException("Нужен 1 аргумент");
-            return Math.sin(a[0]);
+            return Math.cos(a[0]);
+        });
+
+        operations.put("tan", (double... a) -> {
+            if (a.length < 1) throw new IllegalArgumentException("Нужен 1 аргумент");
+            if (Math.abs(Math.cos(a[0])) < 1e-10) {
+                throw new ArithmeticException("Тангенс не существует для π/2 + πn, где n∈ℤ");
+            }
+            return Math.tan(a[0]);
+        });
+
+        operations.put("atan", a -> {
+            if (a.length < 1) throw new IllegalArgumentException("Нужен 1 аргумент");
+            return Math.atan(a[0]);
         });
 
         operations.put("atan2", (double... a) -> {
             if (a.length < 2) throw new IllegalArgumentException("Нужно 2 аргумента");
             return Math.atan2(a[0], a[1]);
+        });
+
+        operations.put("^", a -> {
+            if (args.length < 2) throw new IllegalArgumentException();
+            return Math.pow(a[0], a[1]);
+        });
+
+        operations.put("sqrt", a -> {
+            if (a.length < 1) throw new IllegalArgumentException();
+            if (a[0] < 0) throw new IllegalArgumentException("Квадратный корень из отрицательного числа в R не определён");
+            return Math.sqrt(a[0]);
+        });
+
+        operations.put("%", a -> {
+            if (a.length < 2) throw new IllegalArgumentException();
+            if (a[1] == 0) throw new ArithmeticException("Деление на ноль");
+            return a[0] * a[1] / 100;
         });
 
         while (true) {
