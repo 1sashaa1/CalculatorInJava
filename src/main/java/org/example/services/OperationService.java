@@ -71,12 +71,41 @@ public class OperationService {
         if (a[0] < 0) throw new IllegalArgumentException("Квадратный корень из отрицательного числа в R не определён");
         return Math.sqrt(a[0]);
     });
-
         operations.put("%", a -> {
         if (a.length < 2) throw new IllegalArgumentException();
         if (a[1] == 0) throw new ArithmeticException("Деление на ноль");
         return a[0] * a[1] / 100;
     });
+        operations.put("log", a -> {
+            if (a.length < 1) throw new IllegalArgumentException("Нужен 1 аргумент");
+            if (a[0] <= 0) throw new IllegalArgumentException("Аргумент должен быть положительным");
+            return Math.log(a[0]);
+        });
+        operations.put("log10", a -> {
+            if (a.length < 1) throw new IllegalArgumentException("Нужен 1 аргумент");
+            if (a[0] <= 0) throw new IllegalArgumentException("Аргумент должен быть положительным");
+            return Math.log10(a[0]);
+        });
+        operations.put("exp", a -> {
+            if (a.length < 1) throw new IllegalArgumentException("Нужен 1 аргумент");
+            return Math.exp(a[0]);
+        });
+        operations.put("abs", a -> {
+            if (a.length < 1) throw new IllegalArgumentException("Нужен 1 аргумент");
+            return Math.abs(a[0]);
+        });
+        operations.put("round", a -> {
+            if (a.length < 1) throw new IllegalArgumentException("Нужен 1 аргумент");
+            return (double) Math.round(a[0]);
+        });
+        operations.put("max", a -> {
+            if (a.length < 2) throw new IllegalArgumentException("Нужно минимум 2 аргумента");
+            return Arrays.stream(a).max().orElseThrow();
+        });
+        operations.put("min", a -> {
+            if (a.length < 2) throw new IllegalArgumentException("Нужно минимум 2 аргумента");
+            return Arrays.stream(a).min().orElseThrow();
+        });
 
     }
     public IOperation getOperation(String op) {
@@ -86,4 +115,5 @@ public class OperationService {
     public Set<String> getAvailableOperations() {
         return operations.keySet();
     }
+
 }
